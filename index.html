@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2025 by sangheekeem (http://jsbin.com/neralum/4/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>홈파티 간편식 Recipe Book</title>
+  <style>
+    body {
+      font-family: 'Pretendard', sans-serif;
+      background-color: #fff8ef;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .recipe-card {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .recipe-card:hover {
+      transform: translateY(-5px);
+    }
+    .image-placeholder img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .main-image {
+      width: 100%;
+      height: auto;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    .step-section {
+      background-color: #e6f2d4;
+      padding: 16px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .step-text {
+      flex: 1;
+      margin-right: 12px;
+    }
+    .step-image {
+      width: 100px;
+      height: auto;
+      border-radius: 6px;
+    }
+    .controls, .review {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .review textarea {
+      width: 100%;
+      height: 80px;
+      margin-top: 10px;
+    }
+    .star-rating {
+      font-size: 24px;
+      color: #ccc;
+      cursor: pointer;
+    }
+    .star-rating .filled {
+      color: #f5b301;
+    }
+    button {
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      background-color: #4d774e;
+      color: white;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    button#homeBtn, button#musamHomeBtn, button#kanapeHomeBtn {
+      background-color: #3a5f2b;
+    }
+    .done {
+      background-color: #b0c89f;
+      color: black;
+      margin-top: 10px;
+      border-radius: 6px;
+      padding: 8px;
+      display: none;
+    }
+    #review-list {
+      margin-top: 30px;
+      padding-top: 10px;
+      border-top: 2px solid #aaa;
+      max-height: 300px;
+      overflow-y: auto;
+      text-align: left;
+    }
+    #review-list div {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    #summary {
+      margin-top: 20px;
+      background: #d4e3c0;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>홈파티 간편식 Recipe Book</h1>
+
+    <!-- 홈 화면 -->
+    <div id="homeScreen">
+      <p>아래 레시피 중 하나를 선택해보세요!</p>
+      <div class="recipe-grid">
+        <div class="recipe-card" data-recipe="kanape">
+          <div class="image-placeholder">
+            <img src="https://i.imgur.com/pcE5wo8.jpg" alt="카나페" />
+          </div>
+          <h3>카나페 (Kanape)</h3>
+          <p>간단하고 고급스러운 핑거푸드</p>
+        </div>
+        <div class="recipe-card" data-recipe="musam">
+          <div class="image-placeholder">
+            <img src="https://i.imgur.com/JlNEJ93.jpg" alt="무쌈말이" />
+          </div>
+          <h3>무쌈말이</h3>
+          <p>가볍고 건강한 채소롤</p>
+        </div>
+        <div class="recipe-card" data-recipe="sandwichRoll">
+          <div class="image-placeholder">
+            <img src="https://i.imgur.com/baOpiEM.jpg" alt="샌드위치 롤" />
+          </div>
+          <h3>샌드위치 롤</h3>
+          <p>아이들이 좋아하는 부드러운 맛</p>
+        </div>
+        <div class="recipe-card" data-recipe="chickenSkewers">
+          <div class="image-placeholder">
+            <img src="https://i.imgur.com/kJjNZ8A.jpg" alt="닭꼬치" />
+          </div>
+          <h3>닭꼬치</h3>
+          <p>든든하고 맛있는 꼬치요리</p>
+        </div>
+        <div class="recipe-card" data-recipe="chocoFondue">
+          <div class="image-placeholder">
+            <img src="https://i.imgur.com/mF0zcev.jpg" alt="딸기 초코퐁듀" />
+          </div>
+          <h3>딸기 초코퐁듀</h3>
+          <p>귀엽고 달콤한 디저트</p>
+        </div>
+        <div class="recipe-card" data-recipe="sangria">
+          <div class="image-placeholder">
+            <img src="https://i.imgur.com/ce2ar8T.jpg" alt="상그리아" />
+          </div>
+          <h3>상그리아</h3>
+          <p>상큼한 과일 와인 음료</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 무쌈말이 상세 + 후기 화면 -->
+    <div id="musamScreen" style="display:none; text-align:left;">
+      <button id="musamHomeBtn">🏠 홈으로 돌아가기</button>
+      <h2>[2] 무쌈말이 (Radish Wrapping Roll)</h2>
+      <img src="https://i.imgur.com/JlNEJ93.jpg" alt="무쌈말이 메인 이미지" class="main-image" />
+      <table>
+        <tr><th>재료</th><th>설명</th></tr>
+        <tr><td>무쌈</td><td>구매한 얇은 무쌈 준비</td></tr>
+        <tr><td>햄</td><td>길게 채 썰기</td></tr>
+        <tr><td>오이</td><td>채 썰기</td></tr>
+        <tr><td>파프리카</td><td>색감 있게 채 썰기</td></tr>
+        <tr><td>크래미</td><td>길게 찢어서 준비</td></tr>
+        <tr><td>마요네즈</td><td>약간</td></tr>
+      </table>
+        <h3>조리 단계</h3>
+      <div class="step-section">
+        <div class="step-item">
+          <div class="step-text">
+            <strong>1. 무쌈 한 장을 펼치고 속재료를 가운데 올린다.</strong><br>
+            <span style="color: #c0392b;">Tip 1.</span> 재료를 부채꼴 모양으로 올려놓으면 더 예쁜 모양으로 만들 수 있어요!<br>
+            <span style="color: #c0392b;">Tip 2.</span> 채소뿐 아니라 연어, 오리고기 등 다양한 조화도 OK!<br>
+            <span style="color: #c0392b;">Tip 3.</span> 색감을 고려해서 아래에 채소를 깔고 위에 올리면 시각적으로 좋아요.
+          </div>
+          <img src="https://i.imgur.com/bvuNr8C.jpg" alt="조리1" class="step-image">
+        </div>
+        <div class="step-item">
+          <div class="step-text">
+            <strong>2. 양옆으로 펼쳐져있는 무를 가운데에 덮는다.</strong><br>
+            <span style="color: #c0392b;">Tip 1.</span> 좌우 중 어느 쪽을 먼저 접든 상관없지만 균형 맞게 접는 게 중요해요!<br>
+          </div>
+          <img src="https://i.imgur.com/lzhuTGx.jpg" alt="조리2" class="step-image">
+        </div>
+        <div class="step-item">
+          <div class="step-text">
+            <strong>3. 만들어놨던 겨자소스를 가운데 두고 가장자리에 돌돌 말아 무쌈말이를 올려 완성한다.</strong>
+          </div>
+          <img src="https://i.imgur.com/YktF5oS.jpg" alt="조리3" class="step-image">
+        </div>
+      </div>
+
+      <div class="controls">
+        <h3>재료 손질 및 조리 시간</h3>
+        <div>
+          <div id="timerDisplay">00:00</div>
+          <button id="startBtn">▶️ 시작</button>
+          <button id="pauseBtn">⏸ 중지</button>
+          <button id="resetBtn">↻ 초기화</button>
+        </div>
+        <div class="done" id="doneMessage">완료!</div>
+      </div>
+
+      <div class="review">
+        <h3>별점과 후기 남기기</h3>
+        <div id="starContainer" class="star-rating" role="radiogroup" aria-label="별점 선택">
+          <span class="star" data-value="1" role="radio" aria-checked="false" tabindex="0">★</span>
+          <span class="star" data-value="2" role="radio" aria-checked="false" tabindex="-1">★</span>
+          <span class="star" data-value="3" role="radio" aria-checked="false" tabindex="-1">★</span>
+          <span class="star" data-value="4" role="radio" aria-checked="false" tabindex="-1">★</span>
+          <span class="star" data-value="5" role="radio" aria-checked="false" tabindex="-1">★</span>
+        </div>
+        <textarea id="reviewInput" placeholder="후기를 작성해주세요..."></textarea><br />
+        <button id="submitReviewBtn">등록</button>
+      </div>
+
+      <div id="summary"></div>
+      <div id="review-list"></div>
+    </div>
+
+    <!-- 카나페 상세 + 후기 화면 -->
+    <div id="kanapeScreen" style="display:none; text-align:left;">
+      <button id="kanapeHomeBtn">🏠 홈으로 돌아가기</button>
+      <h2>[1] 카나페 (Kanape)</h2>
+      <img src="https://i.imgur.com/pcE5wo8.jpg" alt="카나페 메인 이미지" class="main-image" />
+      <table>
+        <tr><th>재료</th><th>설명</th></tr>
+        <tr><td>크래커</td><td>플레인 또는 참깨 크래커</td></tr>
+        <tr><td>슬라이스 햄</td><td>모양 맞춰 자르기</td></tr>
+        <tr><td>슬라이스 치즈</td><td>적당한 크기로 자르기</td></tr>
+        <tr><td>방울토마토</td><td>얇게 슬라이스</td></tr>
+        <tr><td>올리브, 연어, 허브</td><td>토핑용 선택 재료</td></tr>
+      </table>
+
+       <h3>조리 단계</h3>
+    <div class="step-section">
+      <div class="step-item">
+        <div class="step-text">
+          <strong>1. 크래커를 하나씩 펼쳐 세팅한다. 기호에 따라 참크래커, 아이비 등 자유롭게 크래커를 준비한다.</strong><br>
+        </div>
+        <img src="https://i.imgur.com/XifHltC.jpg" alt="조리1" class="step-image">
+      </div>
+      <div class="step-item">
+        <div class="step-text">
+          <strong>2. 손질을 완료한 치즈, 오이, 햄, 토마토, 참치를 세팅된 크래커 위에 원하는 순서로 올려 완성한다.  </strong><br>
+          <span style="color: #c0392b;">Tip1. 재료 순서를 크래커마다 다르게 올려서 색다른 모양을 만들거나 좋아하는 재료만 올려 취향에 맞게 즐길 수 있어요!  
+        </div>
+        <img src="https://i.imgur.com/3OitQxi.jpg" alt="조리2" class="step-image">
+      </div>
+    </div>
+
+      <div class="controls">
+        <h3>재료 손질 및 조리 시간</h3>
+        <div>
+          <div id="kanapeTimerDisplay">00:00</div>
+          <button id="kanapeStartBtn">▶️ 시작</button>
+          <button id="kanapePauseBtn">⏸ 중지</button>
+          <button id="kanapeResetBtn">↻ 초기화</button>
+        </div>
+        <div class="done" id="kanapeDoneMessage">완료!</div>
+      </div>
+
+      <div class="review">
+        <h3>별점과 후기 남기기</h3>
+        <div id="kanapeStarContainer" class="star-rating" role="radiogroup" aria-label="별점 선택">
+          <span class="star" data-value="1" role="radio" aria-checked="false" tabindex="0">★</span>
+          <span class="star" data-value="2" role="radio" aria-checked="false" tabindex="-1">★</span>
+          <span class="star" data-value="3" role="radio" aria-checked="false" tabindex="-1">★</span>
+          <span class="star" data-value="4" role="radio" aria-checked="false" tabindex="-1">★</span>
+          <span class="star" data-value="5" role="radio" aria-checked="false" tabindex="-1">★</span>
+        </div>
+        <textarea id="kanapeReviewInput" placeholder="후기를 작성해주세요..."></textarea><br />
+        <button id="kanapeSubmitReviewBtn">등록</button>
+      </div>
+
+      <div id="kanapeSummary"></div>
+      <div id="kanapeReviewList"></div>
+    </div>
+
+  </div>
+
+<script>
+  // 화면 전환
+  const homeScreen = document.getElementById('homeScreen');
+  const musamScreen = document.getElementById('musamScreen');
+  const kanapeScreen = document.getElementById('kanapeScreen');
+
+  // 홈에서 카드 클릭 시 상세 화면 이동
+  document.querySelectorAll('.recipe-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const recipe = card.dataset.recipe;
+      if(recipe === 'musam'){
+        showMusam();
+      } else if(recipe === 'kanape'){
+        showKanape();
+      } else {
+        alert('해당 레시피는 준비 중입니다.');
+      }
+    });
+  });
+
+  // 홈으로 돌아가기 버튼
+  document.getElementById('musamHomeBtn').addEventListener('click', () => {
+    musamScreen.style.display = 'none';
+    homeScreen.style.display = 'block';
+    resetMusamTimer();
+  });
+  document.getElementById('kanapeHomeBtn').addEventListener('click', () => {
+    kanapeScreen.style.display = 'none';
+    homeScreen.style.display = 'block';
+    resetKanapeTimer();
+  });
+
+  // 무쌈말이 화면 보여주기
+  function showMusam() {
+    homeScreen.style.display = 'none';
+    musamScreen.style.display = 'block';
+    loadMusamReviews();
+  }
+
+  // 카나페 화면 보여주기
+  function showKanape() {
+    homeScreen.style.display = 'none';
+    kanapeScreen.style.display = 'block';
+    loadKanapeReviews();
+  }
+
+
+  // ===========================
+  // 무쌈말이 타이머 기능
+  let musamTimerInterval;
+  let musamSeconds = 0;
+  const musamTimerDisplay = musamScreen.querySelector('#timerDisplay');
+  const musamDoneMessage = musamScreen.querySelector('#doneMessage');
+  const musamStartBtn = musamScreen.querySelector('#startBtn');
+  const musamPauseBtn = musamScreen.querySelector('#pauseBtn');
+  const musamResetBtn = musamScreen.querySelector('#resetBtn');
+
+  musamStartBtn.addEventListener('click', () => {
+    clearInterval(musamTimerInterval);
+    musamTimerInterval = setInterval(() => {
+      musamSeconds++;
+      updateMusamTimer();
+    }, 1000);
+  });
+  musamPauseBtn.addEventListener('click', () => {
+    clearInterval(musamTimerInterval);
+  });
+  musamResetBtn.addEventListener('click', () => {
+    clearInterval(musamTimerInterval);
+    musamSeconds = 0;
+    updateMusamTimer();
+    musamDoneMessage.style.display = 'none';
+  });
+
+  function updateMusamTimer(){
+    let min = Math.floor(musamSeconds / 60);
+    let sec = musamSeconds % 60;
+    musamTimerDisplay.textContent = `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    if(musamSeconds === 900){ // 15분
+      musamDoneMessage.style.display = 'block';
+    }
+  }
+  function resetMusamTimer() {
+    clearInterval(musamTimerInterval);
+    musamSeconds = 0;
+    updateMusamTimer();
+    musamDoneMessage.style.display = 'none';
+  }
+
+  // ===========================
+  // 카나페 타이머 기능
+  let kanapeTimerInterval;
+  let kanapeSeconds = 0;
+  const kanapeTimerDisplay = kanapeScreen.querySelector('#kanapeTimerDisplay');
+  const kanapeDoneMessage = kanapeScreen.querySelector('#kanapeDoneMessage');
+  const kanapeStartBtn = kanapeScreen.querySelector('#kanapeStartBtn');
+  const kanapePauseBtn = kanapeScreen.querySelector('#kanapePauseBtn');
+  const kanapeResetBtn = kanapeScreen.querySelector('#kanapeResetBtn');
+
+  kanapeStartBtn.addEventListener('click', () => {
+    clearInterval(kanapeTimerInterval);
+    kanapeTimerInterval = setInterval(() => {
+      kanapeSeconds++;
+      updateKanapeTimer();
+    }, 1000);
+  });
+  kanapePauseBtn.addEventListener('click', () => {
+    clearInterval(kanapeTimerInterval);
+  });
+  kanapeResetBtn.addEventListener('click', () => {
+    clearInterval(kanapeTimerInterval);
+    kanapeSeconds = 0;
+    updateKanapeTimer();
+    kanapeDoneMessage.style.display = 'none';
+  });
+
+  function updateKanapeTimer(){
+    let min = Math.floor(kanapeSeconds / 60);
+    let sec = kanapeSeconds % 60;
+    kanapeTimerDisplay.textContent = `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+    if(kanapeSeconds === 900){ // 15분
+      kanapeDoneMessage.style.display = 'block';
+    }
+  }
+  function resetKanapeTimer() {
+    clearInterval(kanapeTimerInterval);
+    kanapeSeconds = 0;
+    updateKanapeTimer();
+    kanapeDoneMessage.style.display = 'none';
+  }
+
+
+  // ===========================
+  // 별점 & 후기 (무쌈말이)
+
+  const musamStars = musamScreen.querySelectorAll('#starContainer .star');
+  const musamReviewInput = musamScreen.querySelector('#reviewInput');
+  const musamSubmitReviewBtn = musamScreen.querySelector('#submitReviewBtn');
+  const musamReviewList = musamScreen.querySelector('#review-list');
+  const musamSummary = musamScreen.querySelector('#summary');
+  let musamSelectedRating = 0;
+
+  musamStars.forEach(star => {
+    star.addEventListener('click', () => {
+      musamSelectedRating = parseInt(star.dataset.value);
+      updateStarDisplay(musamStars, musamSelectedRating);
+    });
+    star.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        musamSelectedRating = parseInt(star.dataset.value);
+        updateStarDisplay(musamStars, musamSelectedRating);
+      }
+    });
+  });
+
+  function updateStarDisplay(stars, rating){
+    stars.forEach(star => {
+      if(parseInt(star.dataset.value) <= rating){
+        star.classList.add('filled');
+        star.setAttribute('aria-checked', 'true');
+        star.tabIndex = 0;
+      } else {
+        star.classList.remove('filled');
+        star.setAttribute('aria-checked', 'false');
+        star.tabIndex = -1;
+      }
+    });
+  }
+
+  musamSubmitReviewBtn.addEventListener('click', () => {
+    const reviewText = musamReviewInput.value.trim();
+    if(musamSelectedRating === 0){
+      alert('별점을 선택해주세요.');
+      return;
+    }
+    if(reviewText === ''){
+      alert('후기를 작성해주세요.');
+      return;
+    }
+    saveMusamReview({ rating: musamSelectedRating, text: reviewText });
+    musamReviewInput.value = '';
+    musamSelectedRating = 0;
+    updateStarDisplay(musamStars, 0);
+    loadMusamReviews();
+  });
+
+  function saveMusamReview(review){
+    let reviews = JSON.parse(localStorage.getItem('musamReviews') || '[]');
+    reviews.push(review);
+    localStorage.setItem('musamReviews', JSON.stringify(reviews));
+  }
+
+  function loadMusamReviews(){
+    let reviews = JSON.parse(localStorage.getItem('musamReviews') || '[]');
+    musamReviewList.innerHTML = '';
+    if(reviews.length === 0){
+      musamSummary.textContent = '등록된 후기가 없습니다.';
+      return;
+    }
+    // 평균 별점 계산
+    let avg = reviews.reduce((acc, cur) => acc + cur.rating, 0) / reviews.length;
+    musamSummary.textContent = `후기 ${reviews.length}건, 평균 별점: ${avg.toFixed(1)} ★`;
+
+    // 후기 리스트 렌더링
+    reviews.slice().reverse().forEach(r => {
+      const div = document.createElement('div');
+      div.innerHTML = `${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}<br>${escapeHTML(r.text)}`;
+      musamReviewList.appendChild(div);
+    });
+  }
+
+
+  // ===========================
+  // 별점 & 후기 (카나페)
+
+  const kanapeStars = kanapeScreen.querySelectorAll('#kanapeStarContainer .star');
+  const kanapeReviewInput = kanapeScreen.querySelector('#kanapeReviewInput');
+  const kanapeSubmitReviewBtn = kanapeScreen.querySelector('#kanapeSubmitReviewBtn');
+  const kanapeReviewList = kanapeScreen.querySelector('#kanapeReviewList');
+  const kanapeSummary = kanapeScreen.querySelector('#kanapeSummary');
+  let kanapeSelectedRating = 0;
+
+  kanapeStars.forEach(star => {
+    star.addEventListener('click', () => {
+      kanapeSelectedRating = parseInt(star.dataset.value);
+      updateStarDisplay(kanapeStars, kanapeSelectedRating);
+    });
+    star.addEventListener('keydown', e => {
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        kanapeSelectedRating = parseInt(star.dataset.value);
+        updateStarDisplay(kanapeStars, kanapeSelectedRating);
+      }
+    });
+  });
+
+  kanapeSubmitReviewBtn.addEventListener('click', () => {
+    const reviewText = kanapeReviewInput.value.trim();
+    if(kanapeSelectedRating === 0){
+      alert('별점을 선택해주세요.');
+      return;
+    }
+    if(reviewText === ''){
+      alert('후기를 작성해주세요.');
+      return;
+    }
+    saveKanapeReview({ rating: kanapeSelectedRating, text: reviewText });
+    kanapeReviewInput.value = '';
+    kanapeSelectedRating = 0;
+    updateStarDisplay(kanapeStars, 0);
+    loadKanapeReviews();
+  });
+
+  function saveKanapeReview(review){
+    let reviews = JSON.parse(localStorage.getItem('kanapeReviews') || '[]');
+    reviews.push(review);
+    localStorage.setItem('kanapeReviews', JSON.stringify(reviews));
+  }
+
+  function loadKanapeReviews(){
+    let reviews = JSON.parse(localStorage.getItem('kanapeReviews') || '[]');
+    kanapeReviewList.innerHTML = '';
+    if(reviews.length === 0){
+      kanapeSummary.textContent = '등록된 후기가 없습니다.';
+      return;
+    }
+    // 평균 별점 계산
+    let avg = reviews.reduce((acc, cur) => acc + cur.rating, 0) / reviews.length;
+    kanapeSummary.textContent = `후기 ${reviews.length}건, 평균 별점: ${avg.toFixed(1)} ★`;
+
+    // 후기 리스트 렌더링
+    reviews.slice().reverse().forEach(r => {
+      const div = document.createElement('div');
+      div.innerHTML = `${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}<br>${escapeHTML(r.text)}`;
+      kanapeReviewList.appendChild(div);
+    });
+  }
+
+  // HTML Escape 함수 (보안)
+  function escapeHTML(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+</script>
+</body>
+</html>
